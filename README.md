@@ -1,6 +1,6 @@
 # Mountebank
 
-TODO: Write a gem description
+A simple Ruby library that lets you manage your [Mountebank test server](http://www.mbtest.org/).
 
 ## Installation
 
@@ -20,11 +20,37 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+### Initialization
+
+1. Add these to you environment hash (eg. add to your `.env` file)
+	
+	```
+MOUNTEBANK_SERVER=127.0.0.1
+MOUNTEBANK_PORT=2525
+```
+
+2. Include the lib in your `spec_helper`.
+
+	```ruby
+include 'mountebank'
+```
+
+### Get all available imposters
+
+```ruby
+Mountebank.imposters
+```
+
+### Get all stubs
+
+```ruby
+imposter = Mountbank.imposters.first
+puts imposter.stubs
+```
 
 ## Contributing
 
-1. Fork it ( https://github.com/[my-github-username]/mountebank/fork )
+1. Fork it ( https://github.com/CoderKungfu/mountebank/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
