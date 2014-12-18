@@ -1,5 +1,13 @@
 require "mountebank/version"
+require "mountebank/network"
 
 module Mountebank
-  # Your code goes here...
+  extend self
+
+  def self.imposters
+    response = Network.get('/imposters')
+    response.body[:imposters] if response.success?
+
+    []
+  end
 end
