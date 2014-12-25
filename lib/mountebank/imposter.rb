@@ -38,5 +38,18 @@ module Mountebank
 
       return false
     end
+
+    def self.delete(port)
+      response = Network.get("/imposters/#{port}")
+      response.success?
+    end
+
+    def delete!
+      delete(@port)
+    end
+
+    def reload
+      true
+    end
   end
 end

@@ -60,4 +60,38 @@ RSpec.describe Mountebank::Imposter do
       end
     end
   end
+
+  describe '.delete' do
+    before do
+      Mountebank::Imposter.create(port)
+    end
+
+    context 'has imposter' do
+      it 'returns true' do
+        expect(Mountebank::Imposter.delete(port)).to be
+      end
+    end
+
+    context 'no imposter' do
+      it 'returns false' do
+        expect(Mountebank::Imposter.delete(4546)).to_not be
+      end
+    end
+  end
+
+  describe '#reload' do
+    before do
+      Mountebank::Imposter.create(port)
+    end
+
+    context 'no change' do
+      let(:imposter) { Mountebank::Imposter.find(port) }
+
+      it 'returns imposter' do
+        expect(imposter.reload).to be
+      end
+
+      it_should_behave_like 'blank imposter'
+    end
+  end
 end
