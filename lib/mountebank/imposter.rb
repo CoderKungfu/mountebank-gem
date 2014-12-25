@@ -1,6 +1,6 @@
 module Mountebank
   class Imposter
-    attr_reader :port, :protocol, :stubs, :requests
+    attr_reader :port, :protocol, :name, :stubs, :requests, :mode
 
     PROTOCOL_HTTP = 'http'
     PROTOCOL_HTTPS = 'https'
@@ -18,11 +18,11 @@ module Mountebank
       set_attributes(data)
     end
 
-    def self.create(port, protocol=PROTOCOL_HTTP)
+    def self.create(port, protocol=PROTOCOL_HTTP, options={})
       raise 'Invalid port number' unless port.is_a? Integer
       raise 'Invalid protocol' unless PROTOCOLS.include?(protocol)
 
-      data = {port: port, protocol: protocol}
+      data = {port: port, protocol: protocol}.merge(options)
       response = Network.post('/imposters', data)
       return Mountebank::Imposter.new(response.body) if response.success?
 
@@ -62,8 +62,10 @@ module Mountebank
     def set_attributes(data)
       @port = data["port"]
       @protocol = data["protocol"]
+      @name = data["name"] || "imposter_#{@port}"
       @stubs = data["stubs"] || []
       @requests = data["requests"] || []
+      @mode = data["mode"] || nil
     end
   end
 end

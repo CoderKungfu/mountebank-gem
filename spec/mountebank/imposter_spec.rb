@@ -13,8 +13,10 @@ RSpec.describe Mountebank::Imposter do
       expect(imposter).to be_a Mountebank::Imposter
       expect(imposter.port).to eq port
       expect(imposter.protocol).to eq protocol
+      expect(imposter.name).to eq "imposter_#{port}"
       expect(imposter.stubs).to be_empty
       expect(imposter.requests).to be_empty
+      expect(imposter.mode).to be_nil
       expect(Mountebank.imposters).to_not be_empty
     end
   end
@@ -30,6 +32,14 @@ RSpec.describe Mountebank::Imposter do
       let(:imposter) { Mountebank::Imposter.create(port) }
 
       it_should_behave_like 'blank imposter'
+    end
+
+    context 'other creation options' do
+      let(:imposter) { Mountebank::Imposter.create(port, protocol, name:'meow_server') }
+
+      it 'uses a different name' do
+        expect(imposter.name).to eq 'meow_server'
+      end
     end
 
     context 'invalid arguments' do
