@@ -6,7 +6,7 @@ RSpec.describe Mountebank::Imposter do
   end
 
   let(:port) { 4545 }
-  let(:protocol) { 'http' }
+  let(:protocol) { Mountebank::Imposter::PROTOCOL_HTTP }
 
   shared_examples 'blank imposter' do
     it 'valid imposter' do
@@ -30,6 +30,16 @@ RSpec.describe Mountebank::Imposter do
       let(:imposter) { Mountebank::Imposter.create(port) }
 
       it_should_behave_like 'blank imposter'
+    end
+
+    context 'invalid arguments' do
+      it 'raises invalid port' do
+        expect{ Mountebank::Imposter.create('abcd') }.to raise_error 'Invalid port number'
+      end
+
+      it 'raises invalid protocol' do
+        expect{ Mountebank::Imposter.create(port, 'seattle') }.to raise_error 'Invalid protocol'
+      end
     end
   end
 
