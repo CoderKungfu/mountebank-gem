@@ -6,7 +6,7 @@ module Mountebank
 
   def self.imposters
     response = Network.get('/imposters')
-    response.body[:imposters] if response.success?
+    return response.body["imposters"] if response.success?
 
     []
   end
