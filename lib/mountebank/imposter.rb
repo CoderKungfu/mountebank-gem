@@ -15,10 +15,7 @@ module Mountebank
     ]
 
     def initialize(data={})
-      @port = data["port"]
-      @protocol = data["protocol"]
-      @stubs = data["stubs"] || []
-      @requests = data["requests"] || []
+      set_attributes(data)
     end
 
     def self.create(port, protocol=PROTOCOL_HTTP)
@@ -33,15 +30,15 @@ module Mountebank
     end
 
     def self.find(port)
-      response = Network.get("/imposters/#{port}")
-      return Mountebank::Imposter.new(response.body) if response.success?
+      imposter_data = Imposter.get_imposter_config(port)
+      return Mountebank::Imposter.new(imposter_data) unless imposter_data.empty?
 
       return false
     end
 
     def self.delete(port)
-      response = Network.get("/imposters/#{port}")
-      response.success?
+      response = Network.delete("/imposters/#{port}")
+      response.success? && !response.body.empty?
     end
 
     def delete!
@@ -49,7 +46,24 @@ module Mountebank
     end
 
     def reload
-      true
+      data = Imposter.get_imposter_config(@port)
+      set_attributes(data) unless data.empty?
+
+      self
+    end
+
+    private
+
+    def self.get_imposter_config(port)
+      response = Network.get("/imposters/#{port}")
+      response.success? ? response.body : []
+    end
+
+    def set_attributes(data)
+      @port = data["port"]
+      @protocol = data["protocol"]
+      @stubs = data["stubs"] || []
+      @requests = data["requests"] || []
     end
   end
 end

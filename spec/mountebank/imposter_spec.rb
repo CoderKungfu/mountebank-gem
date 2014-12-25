@@ -84,14 +84,21 @@ RSpec.describe Mountebank::Imposter do
       Mountebank::Imposter.create(port)
     end
 
-    context 'no change' do
-      let(:imposter) { Mountebank::Imposter.find(port) }
+    let!(:imposter) { Mountebank::Imposter.find(port) }
 
+    context 'no change' do
       it 'returns imposter' do
-        expect(imposter.reload).to be
+        expect(imposter.reload).to be_a Mountebank::Imposter
       end
 
       it_should_behave_like 'blank imposter'
+    end
+
+    context 'has requests' do
+      it 'returns imposter with requests' do
+        test_url('http://127.0.0.1:4545')
+        expect(imposter.reload.requests).to_not be_empty
+      end
     end
   end
 end
