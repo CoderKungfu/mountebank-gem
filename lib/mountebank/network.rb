@@ -18,7 +18,6 @@ module Mountebank
     def self.post(uri, data)
       connection.post do |req|
         req.url uri
-        req.headers['Content-Type'] = 'application/json'
         req.body = data.to_json
       end
     end
@@ -26,8 +25,13 @@ module Mountebank
     def self.put(uri, data)
       connection.put do |req|
         req.url uri
-        req.headers['Content-Type'] = 'application/json'
         req.body = data.to_json
+      end
+    end
+
+    def self.delete(uri)
+      connection.delete do |req|
+        req.url uri
       end
     end
 
