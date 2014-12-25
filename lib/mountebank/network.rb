@@ -32,11 +32,11 @@ module Mountebank
     end
 
     def self.mountebank_server
-      !!ENV['MOUNTEBANK_SERVER'] ? ENV['MOUNTEBANK_SERVER'] : 'localhost'
+      ENV['MOUNTEBANK_SERVER'] || 'localhost'
     end
 
     def self.mountebank_server_port
-      !!ENV['MOUNTEBANK_PORT'] ? ENV['MOUNTEBANK_PORT'] : '2525'
+      ENV['MOUNTEBANK_PORT'] || '2525'
     end
 
     def self.mountebank_server_uri
