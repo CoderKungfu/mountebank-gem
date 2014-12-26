@@ -23,7 +23,8 @@ class Mountebank::Stub
   private
 
   def set_attributes(data={})
-    @responses = []
+    @responses, @predicates = [], []
+
     if data[:responses]
       data[:responses].each do |response|
         unless response.is_a? Mountebank::Stub::Response
@@ -33,6 +34,13 @@ class Mountebank::Stub
       end
     end
 
-    @predicates = []
+    if data[:predicates]
+      data[:predicates].each do |predicate|
+        unless predicate.is_a? Mountebank::Stub::Predicate
+          predicate = Mountebank::Stub::Predicate.new(predicate)
+        end
+        @predicates << predicate
+      end
+    end
   end
 end

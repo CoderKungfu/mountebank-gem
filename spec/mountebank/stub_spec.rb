@@ -35,5 +35,27 @@ RSpec.describe Mountebank::Stub do
       expect(stub.to_json).to eq '{"responses":[{"is":{"statusCode":200,"body":"ohai"}}]}'
     end
   end
+
+  context 'has predicates' do
+    let(:predicates) { [
+        {
+          equals: {path:'/test'}
+        }
+      ]
+    }
+
+    it 'is not empty' do
+      expect(stub.predicates).to_not be_empty
+    end
+
+    it 'is a predicate' do
+      expect(stub.predicates.first).to be_a Mountebank::Stub::Predicate
+      expect(stub.predicates.first.equals[:path]).to eq('/test')
+    end
+
+    it 'renders correct JSON' do
+      expect(stub.to_json).to eq '{"predicates":[{"equals":{"path":"/test"}}]}'
+    end
+  end
 end
 
