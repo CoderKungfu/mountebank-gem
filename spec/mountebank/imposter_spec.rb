@@ -57,8 +57,9 @@ RSpec.describe Mountebank::Imposter do
           {is: {statusCode: 200, body:"ohai"}}
         ]
       }
+      let(:predicates) { [] }
       let(:stubs) { [
-          Mountebank::Stub.create(responses)
+          Mountebank::Stub.create(responses, predicates)
         ]
       }
       let!(:imposter) { Mountebank::Imposter.create(port, protocol, stubs:stubs) }
@@ -67,6 +68,22 @@ RSpec.describe Mountebank::Imposter do
         expect(test_url('http://127.0.0.1:4545')).to eq 'ohai'
         expect(imposter.reload.requests).to_not be_empty
         expect(imposter.stubs.first).to be_a Mountebank::Stub
+      end
+
+      context 'with predicates' do
+        let(:response_body) { "Its a real test" }
+        let(:responses) { [
+            {is: {statusCode: 200, body:response_body}}
+          ]
+        }
+        let(:predicates) { [
+            {equals: {path:'/test'}}
+          ]
+        }
+
+        it 'is valid' do
+          expect(test_url('http://127.0.0.1:4545/test')).to eq response_body
+        end
       end
     end
   end
