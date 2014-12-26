@@ -66,6 +66,7 @@ RSpec.describe Mountebank::Imposter do
       it 'is valid' do
         expect(test_url('http://127.0.0.1:4545')).to eq 'ohai'
         expect(imposter.reload.requests).to_not be_empty
+        expect(imposter.stubs.first).to be_a Mountebank::Stub
       end
     end
   end

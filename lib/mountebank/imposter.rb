@@ -31,14 +31,14 @@ module Mountebank
       response = Network.post('/imposters', data)
       return Mountebank::Imposter.new(response.body) if response.success?
 
-      return false
+      false
     end
 
     def self.find(port)
       imposter_data = Imposter.get_imposter_config(port)
       return Mountebank::Imposter.new(imposter_data) unless imposter_data.empty?
 
-      return false
+      false
     end
 
     def self.delete(port)
@@ -68,7 +68,13 @@ module Mountebank
       @port = data[:port]
       @protocol = data[:protocol]
       @name = data[:name] || "imposter_#{@port}"
-      @stubs = data[:stubs] || []
+      @stubs = []
+      if data[:stubs].respond_to?(:each)
+        data[:stubs].each do |stub|
+          stub = Mountebank::Stub.new(stub) unless stub.is_a? Mountebank::Stub
+          @stubs << stub
+        end
+      end
       @requests = data[:requests] || []
       @mode = data[:mode] || nil
     end
