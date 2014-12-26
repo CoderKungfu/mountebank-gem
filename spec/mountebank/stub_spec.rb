@@ -1,8 +1,9 @@
 require 'spec_helper'
 
 RSpec.describe Mountebank::Stub do
-  let(:data) { {} }
-  let(:stub) { Mountebank::Stub.create(data) }
+  let(:responses) { [] }
+  let(:predicates) { [] }
+  let(:stub) { Mountebank::Stub.create(responses, predicates) }
 
   describe '#initialize' do
     it 'creates a new object' do
@@ -14,13 +15,11 @@ RSpec.describe Mountebank::Stub do
   end
 
   context 'has responses' do
-    let(:data) { {
-        "responses" => [
-          {
-            "is" => {statusCode: 200, body:"ohai"}
-          }
-        ]
-      }
+    let(:responses) { [
+        {
+          "is" => {statusCode: 200, body:"ohai"}
+        }
+      ]
     }
 
     it 'is not empty' do

@@ -51,6 +51,23 @@ RSpec.describe Mountebank::Imposter do
         expect{ Mountebank::Imposter.create(port, 'seattle') }.to raise_error 'Invalid protocol'
       end
     end
+
+    context 'creates stub response' do
+      let(:responses) { [
+          {"is" => {statusCode: 200, body:"ohai"}}
+        ]
+      }
+      let(:stubs) { [
+          Mountebank::Stub.create(responses)
+        ]
+      }
+      let!(:imposter) { Mountebank::Imposter.create(port, protocol, stubs:stubs) }
+
+      it 'is valid' do
+        expect(test_url('http://127.0.0.1:4545')).to eq 'ohai'
+        expect(imposter.reload.requests).to_not be_empty
+      end
+    end
   end
 
   describe '.get' do
