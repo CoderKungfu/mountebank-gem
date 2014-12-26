@@ -4,6 +4,7 @@ require "mountebank/network"
 require "mountebank/imposter"
 require "mountebank/stub"
 require "mountebank/stub/response"
+require "mountebank/stub/predicate"
 require "json"
 
 module Mountebank
