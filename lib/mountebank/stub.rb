@@ -7,8 +7,8 @@ class Mountebank::Stub
 
   def self.create(responses=[], predicates=[])
     data = {
-      "responses" => responses,
-      "predicates" => predicates
+      :responses => responses,
+      :predicates => predicates
     }
     new(data)
   end
@@ -24,8 +24,8 @@ class Mountebank::Stub
 
   def set_attributes(data={})
     @responses = []
-    if data["responses"]
-      data["responses"].each do |response|
+    if data[:responses]
+      data[:responses].each do |response|
         unless response.is_a? Mountebank::Stub::Response
           response = Mountebank::Stub::Response.new(response)
         end

@@ -14,7 +14,7 @@ module Mountebank
 
     response = Network.get('/imposters')
     if response.success?
-      response.body["imposters"].each do |imposter|
+      response.body[:imposters].each do |imposter|
         imposters << Mountebank::Imposter.new(imposter)
       end
     end

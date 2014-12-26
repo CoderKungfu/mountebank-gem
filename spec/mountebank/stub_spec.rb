@@ -17,7 +17,7 @@ RSpec.describe Mountebank::Stub do
   context 'has responses' do
     let(:responses) { [
         {
-          "is" => {statusCode: 200, body:"ohai"}
+          is: {statusCode: 200, body:"ohai"}
         }
       ]
     }

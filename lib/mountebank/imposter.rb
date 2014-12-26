@@ -65,12 +65,12 @@ module Mountebank
     end
 
     def set_attributes(data)
-      @port = data["port"]
-      @protocol = data["protocol"]
-      @name = data["name"] || "imposter_#{@port}"
-      @stubs = data["stubs"] || []
-      @requests = data["requests"] || []
-      @mode = data["mode"] || nil
+      @port = data[:port]
+      @protocol = data[:protocol]
+      @name = data[:name] || "imposter_#{@port}"
+      @stubs = data[:stubs] || []
+      @requests = data[:requests] || []
+      @mode = data[:mode] || nil
     end
   end
 end

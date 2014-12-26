@@ -6,6 +6,7 @@ module Mountebank
     def self.connection
       @conn ||= Faraday.new(url: mountebank_server_uri) do |conn|
         conn.request :json
+        conn.response :symbolize_keys, :content_type => /\bjson$/
         conn.response :json, :content_type => /\bjson$/
         conn.adapter Faraday.default_adapter
       end

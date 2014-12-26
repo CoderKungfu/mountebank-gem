@@ -2,9 +2,9 @@ class Mountebank::Stub::Response
   attr_accessor :is, :proxy, :inject
 
   def initialize(data={})
-    @is = data["is"] || nil
-    @proxy = data["proxy"] || nil
-    @inject = data["inject"] || nil
+    @is = data[:is] || nil
+    @proxy = data[:proxy] || nil
+    @inject = data[:inject] || nil
   end
 
   def to_json(*args)

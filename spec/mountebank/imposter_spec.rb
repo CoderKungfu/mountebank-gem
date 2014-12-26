@@ -54,7 +54,7 @@ RSpec.describe Mountebank::Imposter do
 
     context 'creates stub response' do
       let(:responses) { [
-          {"is" => {statusCode: 200, body:"ohai"}}
+          {is: {statusCode: 200, body:"ohai"}}
         ]
       }
       let(:stubs) { [

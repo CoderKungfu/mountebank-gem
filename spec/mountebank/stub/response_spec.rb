@@ -15,7 +15,7 @@ RSpec.describe Mountebank::Stub::Response do
 
   context 'add dummy response' do
     let(:data) { {
-        "is" => {statusCode: 200, body:"ohai"}
+        :is => {statusCode: 200, body:"ohai"}
       }
     }
     it 'is able to response' do
