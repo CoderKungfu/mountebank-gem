@@ -18,14 +18,14 @@ module Mountebank
     def self.post(uri, data)
       connection.post do |req|
         req.url uri
-        req.body = data.to_json
+        req.body = data
       end
     end
 
     def self.put(uri, data)
       connection.put do |req|
         req.url uri
-        req.body = data.to_json
+        req.body = data
       end
     end
 

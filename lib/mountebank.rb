@@ -1,6 +1,10 @@
 require "mountebank/version"
+require "mountebank/helper"
 require "mountebank/network"
 require "mountebank/imposter"
+require "mountebank/stub"
+require "mountebank/stub/response"
+require "json"
 
 module Mountebank
   extend self

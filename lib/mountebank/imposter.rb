@@ -14,6 +14,11 @@ module Mountebank
       PROTOCOL_TCP
     ]
 
+    CREATE_PARAMS_HTTP = [:protocol, :port, :name, :stubs]
+    CREATE_PARAMS_HTTPS = [:protocol, :port, :name, :stubs]
+    CREATE_PARAMS_TCP = [:protocol, :mode, :mode, :name, :stubs]
+    CREATE_PARAMS_SMTP = [:protocol, :port, :name]
+
     def initialize(data={})
       set_attributes(data)
     end
