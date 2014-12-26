@@ -2,6 +2,8 @@ require 'faraday'
 
 module Mountebank
   class Helper
+    # Convert Ruby Hash keys into symbols
+    # Source: https://gist.github.com/Integralist/9503099
     def self.symbolize(obj)
       return obj.reduce({}) do |memo, (k, v)|
         memo.tap { |m| m[k.to_sym] = symbolize(v) }
