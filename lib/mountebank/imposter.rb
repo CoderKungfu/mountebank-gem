@@ -1,6 +1,6 @@
 module Mountebank
   class Imposter
-    attr_reader :port, :protocol, :name, :stubs, :requests, :mode
+    attr_reader :port, :protocol, :name, :stubs, :requests, :matches, :mode
 
     PROTOCOL_HTTP = 'http'
     PROTOCOL_HTTPS = 'https'
@@ -23,15 +23,24 @@ module Mountebank
       set_attributes(data)
     end
 
-    def self.create(port, protocol=PROTOCOL_HTTP, options={})
+    def self.build(port, protocol=PROTOCOL_HTTP, options={})
       raise 'Invalid port number' unless port.is_a? Integer
       raise 'Invalid protocol' unless PROTOCOLS.include?(protocol)
 
       data = {port: port, protocol: protocol}.merge(options)
-      response = Network.post('/imposters', data)
-      return Mountebank::Imposter.new(response.body) if response.success?
+      Mountebank::Imposter.new(data)
+    end
+
+    def save!
+      delete!
+      response = Network.post('/imposters', replayable_data)
+      return reload if response.success?
 
       false
+    end
+
+    def self.create(port, protocol=PROTOCOL_HTTP, options={})
+      self.build(port, protocol, options).save!
     end
 
     def self.find(port)
@@ -47,7 +56,7 @@ module Mountebank
     end
 
     def delete!
-      delete(@port)
+      Imposter.delete(@port)
     end
 
     def reload
@@ -57,7 +66,29 @@ module Mountebank
       self
     end
 
+    def replayable_data
+      data = serializable_hash
+      data.delete(:requests)
+      data.delete(:matches)
+
+      data
+    end
+
+    def to_json(*args)
+      serializable_hash.to_json(*args)
+    end
+
     private
+
+    def serializable_hash
+      data = {port: @port, protocol: @protocol, name: @name}
+      data[:stubs] = @stubs unless @stubs.empty?
+      data[:requests] = @requests unless @requests.empty?
+      data[:matches] = @matches unless @matches.empty?
+      data[:mode] = @mode unless @mode.nil?
+
+      data
+    end
 
     def self.get_imposter_config(port)
       response = Network.get("/imposters/#{port}")
@@ -76,6 +107,7 @@ module Mountebank
         end
       end
       @requests = data[:requests] || []
+      @matches = data[:matches] || []
       @mode = data[:mode] || nil
     end
   end

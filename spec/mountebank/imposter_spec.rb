@@ -17,8 +17,20 @@ RSpec.describe Mountebank::Imposter do
       expect(imposter.stubs).to be_empty
       expect(imposter.requests).to be_empty
       expect(imposter.mode).to be_nil
+    end
+  end
+
+  shared_examples 'persists imposter' do
+    it 'persist to server' do
+      imposter
       expect(Mountebank.imposters).to_not be_empty
     end
+  end
+
+  describe '.build' do
+    let(:imposter) { Mountebank::Imposter.build(port, protocol) }
+
+    it_should_behave_like 'blank imposter'
   end
 
   describe '.create' do
@@ -26,12 +38,14 @@ RSpec.describe Mountebank::Imposter do
       let(:imposter) { Mountebank::Imposter.create(port, protocol) }
 
       it_should_behave_like 'blank imposter'
+      it_should_behave_like 'persists imposter'
     end
 
     context 'assumes 2nd argument to be `http`' do
       let(:imposter) { Mountebank::Imposter.create(port) }
 
       it_should_behave_like 'blank imposter'
+      it_should_behave_like 'persists imposter'
     end
 
     context 'other creation options' do
@@ -97,6 +111,7 @@ RSpec.describe Mountebank::Imposter do
       let(:imposter) { Mountebank::Imposter.find(port) }
 
       it_should_behave_like 'blank imposter'
+      it_should_behave_like 'persists imposter'
     end
 
     context 'unknown imposter' do
@@ -137,6 +152,7 @@ RSpec.describe Mountebank::Imposter do
       end
 
       it_should_behave_like 'blank imposter'
+      it_should_behave_like 'persists imposter'
     end
 
     context 'has requests' do
@@ -144,6 +160,14 @@ RSpec.describe Mountebank::Imposter do
         test_url('http://127.0.0.1:4545')
         expect(imposter.reload.requests).to_not be_empty
       end
+    end
+  end
+
+  describe '#replayable_data' do
+    let(:imposter) { Mountebank::Imposter.build(port, protocol) }
+
+    it 'returns valid data' do
+      expect(imposter.replayable_data).to eq({port:port, protocol:protocol, name:"imposter_#{port}"})
     end
   end
 end
