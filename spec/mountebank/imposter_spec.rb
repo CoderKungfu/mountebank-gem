@@ -163,6 +163,40 @@ RSpec.describe Mountebank::Imposter do
     end
   end
 
+  describe '#add_stub' do
+    let(:imposter) { Mountebank::Imposter.build(port, protocol) }
+
+    context 'with response' do
+      before do
+        response = Mountebank::Stub::HttpResponse.create(200, {}, 'ohai you')
+        imposter.add_stub(response)
+      end
+
+      it 'adds new stub' do
+        expect(imposter.to_json).to eq("{\"port\":#{port},\"protocol\":\"#{protocol}\",\"name\":\"imposter_#{port}\",\"stubs\":[{\"responses\":[{\"is\":{\"statusCode\":200,\"body\":\"ohai you\"}}]}]}")
+      end
+
+      it 'is valid imposter' do
+        imposter.save!
+        expect(test_url('http://127.0.0.1:4545')).to eq('ohai you')
+      end
+    end
+
+    context 'with predicate' do
+      before do
+        response = Mountebank::Stub::HttpResponse.create(200, {}, 'ohai test2')
+        data = {equals: {path:'/test2'}}
+        predicate = Mountebank::Stub::Predicate.new(data)
+        imposter.add_stub(response, predicate)
+      end
+
+      it 'is valid imposter' do
+        imposter.save!
+        expect(test_url('http://127.0.0.1:4545/test2')).to eq('ohai test2')
+      end
+    end
+  end
+
   describe '#replayable_data' do
     let(:imposter) { Mountebank::Imposter.build(port, protocol) }
 

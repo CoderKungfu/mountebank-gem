@@ -66,6 +66,24 @@ module Mountebank
       self
     end
 
+    def add_stub(response=nil, predicate=nil)
+      responses, predicates = [], []
+
+      if response.is_a? Array
+        responses + response
+      elsif response.is_a? Mountebank::Stub::Response
+        responses << response
+      end
+
+      if predicate.is_a? Array
+        predicates + predicate
+      elsif predicate.is_a? Mountebank::Stub::Predicate
+        predicates << predicate
+      end
+
+      @stubs << Mountebank::Stub.create(responses, predicates)
+    end
+
     def replayable_data
       data = serializable_hash
       data.delete(:requests)
