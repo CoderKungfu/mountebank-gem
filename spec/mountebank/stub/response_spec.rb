@@ -22,4 +22,13 @@ RSpec.describe Mountebank::Stub::Response do
       expect(response.to_json).to eq '{"is":{"statusCode":200,"body":"ohai"}}'
     end
   end
+
+  context '.with_injection' do
+    let(:data) { 'function (request, state, logger){}' }
+    let(:response) { Mountebank::Stub::Response.with_injection(data) }
+
+    it 'is valid' do
+      expect(response.inject).to eq(data)
+    end
+  end
 end

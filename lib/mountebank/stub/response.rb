@@ -7,6 +7,13 @@ class Mountebank::Stub::Response
     @inject = data[:inject] || nil
   end
 
+  def self.with_injection(injection='')
+    return false if injection.empty?
+
+    data = {inject:injection}
+    new(data)
+  end
+
   def to_json(*args)
     data = {}
     data[:is] = @is unless @is.nil?
