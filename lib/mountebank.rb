@@ -7,6 +7,7 @@ require "mountebank/stub/response"
 require "mountebank/stub/http_response"
 require "mountebank/stub/https_response"
 require "mountebank/stub/tcp_response"
+require "mountebank/stub/proxy_response"
 require "mountebank/stub/predicate"
 require "json"
 
