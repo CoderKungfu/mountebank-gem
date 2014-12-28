@@ -20,6 +20,22 @@ Or install it yourself as:
 
 ## Usage
 
+### Pre-Requisite
+
+Install Mountebank:
+
+```
+npm install -g mountebank --production
+```
+
+Start Mountebank:
+
+```
+mb --allowInjection
+```
+
+I recommend reading the [Mountebank documentation](http://www.mbtest.org/docs/api/overview) for a deeper understanding of their API.
+
 ### Initialization
 
 1. Add these to you environment hash (eg. add to your `.env` file)
@@ -46,6 +62,61 @@ Mountebank.imposters
 ```ruby
 imposter = Mountbank.imposters.first
 puts imposter.stubs
+```
+### Create Imposter
+
+```ruby
+port = 4545
+protocol = Mountebank::Imposter::PROTOCOL_HTTP
+imposter = Mountebank::Imposter.create(port, protocol)
+```
+
+### Create Imposter with Stub
+
+```ruby
+port = 4545
+protocol = Mountebank::Imposter::PROTOCOL_HTTP
+imposter = Mountebank::Imposter.build(port, protocol)
+
+# Create a response
+status_code = 200
+headers = {"Content-Type" => "application/json"}
+body = {foo:"bar"}.to_json
+response = Mountebank::Stub::HttpResponse(status_code, headers, body)
+
+imposter.add_stub(response)
+imposter.save!
+```
+
+Check the URL:
+```
+curl http://127.0.0.1:4545
+```
+
+### Create Imposter with Stub & Predicate
+
+```ruby
+port = 4545
+protocol = Mountebank::Imposter::PROTOCOL_HTTP
+imposter = Mountebank::Imposter.build(port, protocol)
+
+# Create a response
+status_code = 200
+headers = {"Content-Type" => "application/json"}
+body = {foo:"bar2"}.to_json
+response = Mountebank::Stub::HttpResponse(status_code, headers, body)
+
+# Create a predicate
+data = {equals: {path:"/test"}}
+predicate = Mountebank::Stub::Predicate(data)
+
+imposter.add_stub(response, predicate)
+imposter.save!
+```
+
+Check the URL:
+```
+curl http://127.0.0.1:4545/test
 ```
 
 ## Contributing
