@@ -57,12 +57,6 @@ include 'mountebank'
 Mountebank.imposters
 ```
 
-### Get all stubs
-
-```ruby
-imposter = Mountbank.imposters.first
-puts imposter.stubs
-```
 ### Create Imposter
 
 ```ruby
@@ -82,7 +76,7 @@ imposter = Mountebank::Imposter.build(port, protocol)
 status_code = 200
 headers = {"Content-Type" => "application/json"}
 body = {foo:"bar"}.to_json
-response = Mountebank::Stub::HttpResponse(status_code, headers, body)
+response = Mountebank::Stub::HttpResponse.create(status_code, headers, body)
 
 imposter.add_stub(response)
 imposter.save!
@@ -91,6 +85,13 @@ imposter.save!
 Check the URL:
 ```
 curl http://127.0.0.1:4545
+```
+
+### Get all stubs
+
+```ruby
+imposter = Mountbank.imposters.first
+puts imposter.stubs
 ```
 
 ### Create Imposter with Stub & Predicate
@@ -104,11 +105,11 @@ imposter = Mountebank::Imposter.build(port, protocol)
 status_code = 200
 headers = {"Content-Type" => "application/json"}
 body = {foo:"bar2"}.to_json
-response = Mountebank::Stub::HttpResponse(status_code, headers, body)
+response = Mountebank::Stub::HttpResponse.create(status_code, headers, body)
 
 # Create a predicate
 data = {equals: {path:"/test"}}
-predicate = Mountebank::Stub::Predicate(data)
+predicate = Mountebank::Stub::Predicate.new(data)
 
 imposter.add_stub(response, predicate)
 imposter.save!
