@@ -70,13 +70,13 @@ module Mountebank
       responses, predicates = [], []
 
       if response.is_a? Array
-        responses + response
+        responses = response
       elsif response.is_a? Mountebank::Stub::Response
         responses << response
       end
 
       if predicate.is_a? Array
-        predicates + predicate
+        predicates = predicate
       elsif predicate.is_a? Mountebank::Stub::Predicate
         predicates << predicate
       end
