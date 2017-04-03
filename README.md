@@ -45,10 +45,10 @@ MOUNTEBANK_SERVER=127.0.0.1
 MOUNTEBANK_PORT=2525
 ```
 
-2. Include the lib in your `spec_helper`.
+2. Require the lib in your `spec_helper`.
 
 	```ruby
-include 'mountebank'
+require 'mountebank'
 ```
 
 ### Get all available imposters
