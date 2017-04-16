@@ -5,6 +5,7 @@ class Mountebank::Stub::Response
     @is = data[:is] || nil
     @proxy = data[:proxy] || nil
     @inject = data[:inject] || nil
+    @behaviors = data[:_behaviors]
   end
 
   def self.with_injection(injection='')
@@ -19,6 +20,7 @@ class Mountebank::Stub::Response
     data[:is] = @is unless @is.nil?
     data[:proxy] = @proxy unless @proxy.nil?
     data[:inject] = @inject unless @inject.nil?
+    data[:_behaviors] = @behaviors unless @behaviors.nil?
     data.to_json(*args)
   end
 end
