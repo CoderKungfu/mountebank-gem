@@ -40,15 +40,16 @@ I recommend reading the [Mountebank documentation](http://www.mbtest.org/docs/ap
 
 1. Add these to you environment hash (eg. add to your `.env` file)
 	
-	```
+```
 MOUNTEBANK_SERVER=127.0.0.1
 MOUNTEBANK_PORT=2525
 ```
 
 2. Require the lib in your `spec_helper`.
 
-	```ruby
+```ruby
 require 'mountebank'
+include 'mountebank'
 ```
 
 ### Get all available imposters
