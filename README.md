@@ -45,10 +45,10 @@ MOUNTEBANK_SERVER=127.0.0.1
 MOUNTEBANK_PORT=2525
 ```
 
-2. Include the lib in your `spec_helper`.
+2. Require the lib in your `spec_helper`.
 
 ```ruby
-include 'mountebank'
+require 'mountebank'
 ```
 
 ### Get all available imposters
@@ -119,6 +119,16 @@ Check the URL:
 ```
 curl http://127.0.0.1:4545/test
 ```
+
+### Create a response with behaviors
+[Behaviors](http://www.mbtest.org/docs/api/behaviors) can be passed through when creating a stub http response.
+```ruby
+response = Mountebank::Stub::HttpResponse.create(status_code, headers, body, {wait: 1000}) # Wait 1 second before responding
+```
+
+## Running Specs
+
+The current set of specs require the Mountebank instance to be started with the `--mock` flag.
 
 ## Contributing
 

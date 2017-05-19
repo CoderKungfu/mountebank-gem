@@ -16,3 +16,5 @@ mb.log
 mb.pid
 tags
 .idea/
+.ruby-version
+.ruby-gemset
