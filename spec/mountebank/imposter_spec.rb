@@ -195,6 +195,58 @@ RSpec.describe Mountebank::Imposter do
         expect(test_url('http://127.0.0.1:4545/test2')).to eq('ohai test2')
       end
     end
+
+    context 'with array of responses' do
+      before do
+        response1 = Mountebank::Stub::HttpResponse.create(200, {}, 'hello mother')
+        response2 = Mountebank::Stub::HttpResponse.create(200, {}, 'hello father')
+        data = {equals: {path:'/test3'}}
+        predicate = Mountebank::Stub::Predicate.new(data)
+        imposter.add_stub([response1, response2], predicate)
+        imposter.save!
+      end
+
+      it 'should save stub in memory with 2 responses' do
+        expect(imposter.stubs.first.responses.length).to eq(2)
+      end
+
+      it 'should save stub to server with 2 responses' do
+        stub = Mountebank::Imposter.get_imposter_config(port)[:stubs].first
+        expect(stub[:responses].length).to eq(2)
+      end
+
+      it 'is a valid imposter with 2 responses' do
+        expect(test_url('http://127.0.0.1:4545/test3')).to eq('hello mother')
+        expect(test_url('http://127.0.0.1:4545/test3')).to eq('hello father')
+      end
+    end
+
+    context 'with array of predicates' do
+      before do
+        response1 = Mountebank::Stub::HttpResponse.create(200, {}, 'hello mother')
+        data1 = {equals: {path:'/test3'}}
+        data2 = {equals: {method:'GET'}}
+        predicate1 = Mountebank::Stub::Predicate.new(data1)
+        predicate2 = Mountebank::Stub::Predicate.new(data2)
+        imposter.add_stub(response1, [predicate1, predicate2])
+        imposter.save!
+      end
+
+      it 'should save stub in memory with 2 predicates' do
+        expect(imposter.stubs.first.predicates.length).to eq(2)
+      end
+
+      it 'should save stub to server with 2 predicates' do
+        stub = Mountebank::Imposter.get_imposter_config(port)[:stubs].first
+        expect(stub[:predicates].length).to eq(2)
+      end
+
+      it 'is a valid imposter' do
+        expect(test_url('http://127.0.0.1:4545/test3')).to eq('hello mother')
+      end
+
+    end
+
   end
 
   describe '#replayable_data' do

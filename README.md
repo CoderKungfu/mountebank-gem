@@ -39,7 +39,7 @@ I recommend reading the [Mountebank documentation](http://www.mbtest.org/docs/ap
 ### Initialization
 
 1. Add these to you environment hash (eg. add to your `.env` file)
-	
+
 ```
 MOUNTEBANK_SERVER=127.0.0.1
 MOUNTEBANK_PORT=2525
@@ -49,7 +49,6 @@ MOUNTEBANK_PORT=2525
 
 ```ruby
 require 'mountebank'
-include 'mountebank'
 ```
 
 ### Get all available imposters
