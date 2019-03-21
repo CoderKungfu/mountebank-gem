@@ -76,7 +76,7 @@ RSpec.describe Mountebank::Imposter do
           Mountebank::Stub.create(responses, predicates)
         ]
       }
-      let!(:imposter) { Mountebank::Imposter.create(port, protocol, stubs:stubs) }
+      let!(:imposter) { Mountebank::Imposter.create(port, protocol, stubs: stubs, record_requests: true) }
 
       it 'is valid' do
         expect(test_url('http://127.0.0.1:4545')).to eq 'ohai'
@@ -141,7 +141,7 @@ RSpec.describe Mountebank::Imposter do
 
   describe '#reload' do
     before do
-      Mountebank::Imposter.create(port)
+      Mountebank::Imposter.create(port, Mountebank::Imposter::PROTOCOL_HTTP, recordRequests: true)
     end
 
     let!(:imposter) { Mountebank::Imposter.find(port) }
@@ -173,7 +173,15 @@ RSpec.describe Mountebank::Imposter do
       end
 
       it 'adds new stub' do
-        expect(imposter.to_json).to eq("{\"port\":#{port},\"protocol\":\"#{protocol}\",\"name\":\"imposter_#{port}\",\"stubs\":[{\"responses\":[{\"is\":{\"statusCode\":200,\"body\":\"ohai you\"}}]}]}")
+        expect(imposter.to_json).to eq({
+          "port": port,
+          "protocol": protocol,
+          "name": "imposter_#{port}",
+          "stubs": [{
+            "responses": [{"is":{"statusCode":200, "body":"ohai you"}}]
+          }],
+          "recordRequests": false
+        }.to_json)
       end
 
       it 'is valid imposter' do
@@ -253,7 +261,12 @@ RSpec.describe Mountebank::Imposter do
     let(:imposter) { Mountebank::Imposter.build(port, protocol) }
 
     it 'returns valid data' do
-      expect(imposter.replayable_data).to eq({port:port, protocol:protocol, name:"imposter_#{port}"})
+      expect(imposter.replayable_data).to eq({
+        port: port,
+        protocol: protocol,
+        name: "imposter_#{port}",
+        recordRequests: false
+      })
     end
   end
 end
