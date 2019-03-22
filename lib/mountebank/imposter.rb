@@ -42,6 +42,12 @@ module Mountebank
     def self.create(port, protocol=PROTOCOL_HTTP, options={})
       self.build(port, protocol, options).save!
     end
+    
+    def self.find_all
+      response = Network.get("/imposters")
+      list = response.success? ? response.body[:imposters] : []
+      list.map { |i| Mountebank::Imposter.new(i) }
+    end
 
     def self.find(port)
       imposter_data = Imposter.get_imposter_config(port)

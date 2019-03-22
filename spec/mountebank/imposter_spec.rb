@@ -121,6 +121,29 @@ RSpec.describe Mountebank::Imposter do
     end
   end
 
+  describe '.find_all' do
+    context '0 existing imposters' do
+      it 'returns an empty array' do
+        expect(Mountebank::Imposter.find_all).to be_empty
+      end
+    end
+
+    context '1 existing imposter' do
+      it 'returns a single imposter' do
+        Mountebank::Imposter.create(4546)
+        expect(Mountebank::Imposter.find_all.map(&:port)).to eq([4546])
+      end
+    end
+
+    context '3 existing imposters' do
+      it 'returns all three imposters' do
+        Mountebank::Imposter.create(4546)
+        Mountebank::Imposter.create(4547)
+        expect(Mountebank::Imposter.find_all.map(&:port).sort).to eq([4546, 4547])
+      end
+    end
+  end
+
   describe '.delete' do
     before do
       Mountebank::Imposter.create(port)
