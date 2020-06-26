@@ -4,9 +4,9 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'mountebank/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "mountebank"
+  spec.name          = "erithmetic-mountebank"
   spec.version       = Mountebank::VERSION
-  spec.authors       = ["Michael Cheng"]
+  spec.authors       = ["Michael Cheng", "Erica Kastner"]
   spec.email         = ["mcheng.work@gmail.com"]
   spec.summary       = %q{Ruby GEM to manage a Mountebank Test Server}
   spec.description   = %q{A simple Ruby library that lets you manage your Mountebank test server.}

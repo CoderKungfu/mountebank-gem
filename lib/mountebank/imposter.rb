@@ -1,6 +1,6 @@
 module Mountebank
   class Imposter
-    attr_reader :port, :protocol, :name, :stubs, :requests, :matches, :mode
+    attr_reader :port, :protocol, :name, :stubs, :requests, :matches, :mode, :record_requests
 
     PROTOCOL_HTTP = 'http'
     PROTOCOL_HTTPS = 'https'
@@ -41,6 +41,12 @@ module Mountebank
 
     def self.create(port, protocol=PROTOCOL_HTTP, options={})
       self.build(port, protocol, options).save!
+    end
+    
+    def self.find_all
+      response = Network.get("/imposters")
+      list = response.success? ? response.body[:imposters] : []
+      list.map { |i| Mountebank::Imposter.new(i) }
     end
 
     def self.find(port)
@@ -104,6 +110,7 @@ module Mountebank
       data[:requests] = @requests unless @requests.empty?
       data[:matches] = @matches unless @matches.empty?
       data[:mode] = @mode unless @mode.nil?
+      data[:recordRequests] = @record_requests unless @record_requests.nil?
 
       data
     end
@@ -127,6 +134,7 @@ module Mountebank
       @requests = data[:requests] || []
       @matches = data[:matches] || []
       @mode = data[:mode] || nil
+      @record_requests = data[:record_requests] || data[:recordRequests] || false
     end
   end
 end
