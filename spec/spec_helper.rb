@@ -9,7 +9,7 @@ def reset_mountebank
 end
 
 def test_url(uri)
-  open(uri).read
+  URI.open(uri).read
 end
 
 RSpec.configure do |config|

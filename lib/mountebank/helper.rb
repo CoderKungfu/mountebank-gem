@@ -34,6 +34,6 @@ module Mountebank
   end
 
   if ::Faraday::Middleware.respond_to? :register_middleware
-    ::Faraday::Response.register_middleware :symbolize_keys => lambda { Mountebank::SymbolizeKeys }
+    ::Faraday::Response.register_middleware :symbolize_keys => Mountebank::SymbolizeKeys
   end
 end
