@@ -17,6 +17,7 @@ RSpec.describe Mountebank::Imposter do
       expect(imposter.stubs).to be_empty
       expect(imposter.requests).to be_empty
       expect(imposter.mode).to be_nil
+      expect(imposter.record_requests).to be_falsey
     end
   end
 
@@ -173,7 +174,7 @@ RSpec.describe Mountebank::Imposter do
       end
 
       it 'adds new stub' do
-        expect(imposter.to_json).to eq("{\"port\":#{port},\"protocol\":\"#{protocol}\",\"name\":\"imposter_#{port}\",\"stubs\":[{\"responses\":[{\"is\":{\"statusCode\":200,\"body\":\"ohai you\"}}]}]}")
+        expect(imposter.to_json).to eq("{\"port\":#{port},\"protocol\":\"#{protocol}\",\"name\":\"imposter_#{port}\",\"stubs\":[{\"responses\":[{\"is\":{\"statusCode\":200,\"body\":\"ohai you\"}}]}],\"recordRequests\":false}")
       end
 
       it 'is valid imposter' do
@@ -253,7 +254,29 @@ RSpec.describe Mountebank::Imposter do
     let(:imposter) { Mountebank::Imposter.build(port, protocol) }
 
     it 'returns valid data' do
-      expect(imposter.replayable_data).to eq({port:port, protocol:protocol, name:"imposter_#{port}"})
+      expect(imposter.replayable_data).to eq({port:port, protocol:protocol, name:"imposter_#{port}", recordRequests: false})
+    end
+  end
+
+  describe '#record_requests' do
+    let(:imposter) { Mountebank::Imposter.build(port, protocol, {record_requests: true}) }
+
+    it 'records requests' do
+      response1 = Mountebank::Stub::HttpResponse.create(200, {}, 'hello recorder')
+      data1 = {equals: {path:'/test_recording'}}
+      data2 = {equals: {method:'GET'}}
+      predicate1 = Mountebank::Stub::Predicate.new(data1)
+      predicate2 = Mountebank::Stub::Predicate.new(data2)
+      imposter.add_stub(response1, [predicate1, predicate2])
+      imposter.save!
+
+      expect(imposter.replayable_data).to include({recordRequests: true})
+      imposter.reload
+      expect(imposter.requests).to match_array([])
+      test_url('http://127.0.0.1:4545/test_recording')
+      imposter.reload
+      expect(imposter.requests.size).to be(1)
+      expect(imposter.requests.first[:path]).to match("/test_recording")
     end
   end
 end
